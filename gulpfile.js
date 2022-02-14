@@ -2,20 +2,26 @@
  * @Author: pink
  * @Date: 2022-02-08 20:31:06
  * @LastEditors: pink
- * @LastEditTime: 2022-02-08 21:33:24
+ * @LastEditTime: 2022-02-14 21:26:18
  * @Description: 自动构建入口文件
  */
-const {src, dest, parallel} = require('gulp')
+const {src, dest, parallel, series} = require('gulp')
 const sass = require('gulp-sass')
 const babel = require('gulp-babel')
 const swig = require('gulp-swig')
 const imagemin = require('gulp-imagemin')
+const del = require('del')
 
 
 // html文件中出现的变量对象
 const data = {
   pkg: require('./package.json'),
   data: new Date()
+}
+
+// 清除打包文件
+const clean = () => {
+  return del(['dist'])
 }
 
 // css样式调整
@@ -61,7 +67,7 @@ const extra = () => {
 // 总体编译同步流程处理
 const compile = parallel(style, script, page, image, font)
 
-const build = parallel(compile, extra)
+const build = series(clean, parallel(compile, extra)) 
 
 module.exports = {
   compile,
