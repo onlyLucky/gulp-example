@@ -2,10 +2,10 @@
  * @Author: pink
  * @Date: 2022-02-08 20:31:06
  * @LastEditors: pink
- * @LastEditTime: 2022-02-14 21:50:09
+ * @LastEditTime: 2022-02-15 21:56:43
  * @Description: 自动构建入口文件
  */
-const {src, dest, parallel, series} = require('gulp')
+const {src, dest, parallel, series, watch} = require('gulp')
 
 //自动加载插件处理
 const loadPlugins = require('gulp-load-plugins')
@@ -69,7 +69,17 @@ const extra = () => {
 }
 
 const serve = () => {
+  watch('src/assets/style/*.scss',style)
+  watch('src/assets/script/*.js',script)
+  watch('src/*.html',page)
+  watch('src/assets/images/**',image)
+  watch('src/assets/fonts/**',font)
+  watch('public/**', extra)
+
   bs.init({
+    notify: false,
+    port: 3000,
+    files: 'dist/**',
     server: {
       baseDir: 'dist',
       routes: {
