@@ -2,7 +2,7 @@
  * @Author: pink
  * @Date: 2022-02-08 20:31:06
  * @LastEditors: pink
- * @LastEditTime: 2022-02-15 21:56:43
+ * @LastEditTime: 2022-02-17 22:27:22
  * @Description: 自动构建入口文件
  */
 const {src, dest, parallel, series, watch} = require('gulp')
@@ -72,9 +72,15 @@ const serve = () => {
   watch('src/assets/style/*.scss',style)
   watch('src/assets/script/*.js',script)
   watch('src/*.html',page)
-  watch('src/assets/images/**',image)
-  watch('src/assets/fonts/**',font)
-  watch('public/**', extra)
+  // watch('src/assets/images/**',image)
+  // watch('src/assets/fonts/**',font)
+  // watch('public/**', extra)
+
+  watch([
+    'src/assets/images/**',
+    'src/assets/fonts/**',
+    'public/**'
+  ],bs.reload)
 
   bs.init({
     notify: false,
