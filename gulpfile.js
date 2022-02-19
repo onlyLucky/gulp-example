@@ -2,7 +2,7 @@
  * @Author: pink
  * @Date: 2022-02-08 20:31:06
  * @LastEditors: pink
- * @LastEditTime: 2022-02-19 22:39:51
+ * @LastEditTime: 2022-02-19 23:13:20
  * @Description: 自动构建入口文件
  */
 const {src, dest, parallel, series, watch} = require('gulp')
@@ -98,13 +98,37 @@ const serve = () => {
   })
 }
 
-// 总体编译同步流程处理
-const compile = parallel(style, script, page, image, font)
+const useref = () =>{
+  return src('temp/*.html',{base: 'temp'})
+  .pipe(plugins.useref({ searchPath: ['temp','.']}))
+  // html js css
+  .pipe(plugins.if(/\.js$/,plugins.uglify()))
+  .pipe(plugins.if(/\.css$/,plugins.cleanCss()))
+  .pipe(plugins.if(/\.html$/,plugins.htmlmin({
+    collapseWhitespace: true,
+    minifyCSS: true,
+    minfyJS: true
+  })))
+  .pipe(dest('dist'))
+}
 
-const build = series(clean, parallel(compile, extra)) 
+// 总体编译同步流程处理
+const compile = parallel(style, script, page)
+
+const build = series(
+  clean, 
+  parallel(
+    series(compile, useref),
+    image,
+    font,
+    extra
+  )
+) 
+
+const develop = series(compile, serve)
 
 module.exports = {
-  compile,
+  clean,
   build,
-  serve
+  develop
 }
