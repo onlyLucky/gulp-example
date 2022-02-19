@@ -2,7 +2,7 @@
  * @Author: pink
  * @Date: 2022-02-08 20:31:06
  * @LastEditors: pink
- * @LastEditTime: 2022-02-17 22:27:22
+ * @LastEditTime: 2022-02-19 22:39:51
  * @Description: 自动构建入口文件
  */
 const {src, dest, parallel, series, watch} = require('gulp')
@@ -25,28 +25,31 @@ const data = {
 
 // 清除打包文件
 const clean = () => {
-  return del(['dist'])
+  return del(['dist','temp'])
 }
 
 // css样式调整
 const style = () => {
   return src('src/assets/styles/*.scss',{base: 'src'})
     .pipe(plugins.sass({outputStyle: 'expended'}))
-    .pipe(dest('dist'))
+    .pipe(dest('temp'))
+    .pipe(bs.reload({ stream: true }))
 }
 
 // js文件处理
 const script = () => {
   return src('src/assets/scripts/*.js',{base: 'src'})
     .pipe(plugins.babel({presets: ['@babel/preset-env']}))//将js es6写法转化为es5
-    .pipe(dest('dist'))
+    .pipe(dest('temp'))
+    .pipe(bs.reload({ stream: true }))
 }
 
 // 将基础的html文件进行打包
 const page = () => {
   return src('src/*.html', {base: 'src'})
     .pipe(plugins.swig({data}))
-    .pipe(dest('dist'))
+    .pipe(dest('temp'))
+    .pipe(bs.reload({ stream: true }))
 }
 
 // 图片资源处理
@@ -85,9 +88,9 @@ const serve = () => {
   bs.init({
     notify: false,
     port: 3000,
-    files: 'dist/**',
+    
     server: {
-      baseDir: 'dist',
+      baseDir: ['temp', 'src', 'public'],
       routes: {
         '/node_modules': 'node_modules'
       }
