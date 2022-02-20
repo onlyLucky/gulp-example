@@ -66,7 +66,13 @@ const serve = () => {
    }
    ```
 
-   
+
+## 整体项目打包封装
+
+......后面有时间会进行补充
+
+
+
 
 
 
@@ -96,3 +102,6 @@ const serve = () => {
 
 github gitee 上传branch 默认为master push 的时候记得矫正branch
 
+---
+
+下一步  -> 预告一下 webpack 使用及原理
